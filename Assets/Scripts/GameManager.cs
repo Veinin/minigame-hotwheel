@@ -14,6 +14,7 @@ public class GameManager : MonoBehaviour
     private Joystick    m_Joystick;
     private PlayerView  m_PlayerView;
 
+    private Ring m_CurrntRing;
     private List<Ring>  m_RingList;
 
     void Awake()
@@ -50,15 +51,16 @@ public class GameManager : MonoBehaviour
     void StartGame()
     {
         m_PlayerView.gameObject.SetActive(true);
-        SpawnRing(true);
+        SpawnRing();
     }
 
-    void SpawnRing(bool isFirst)
+    void SpawnRing()
     {
         var ring = GameObject.Instantiate<Ring>(ringPrefab, SpawnPos, Quaternion.identity);
         ring.transform.DOMove(OriginPos, 0.5f).OnComplete(() => {
             m_Joystick.gameObject.SetActive(true);
         });
+        m_CurrntRing = ring;
         m_RingList.Add(ring);
     }
 
@@ -69,7 +71,12 @@ public class GameManager : MonoBehaviour
 
     void OnJoystickDown()
     {
+        m_PlayerView.back.gameObject.SetActive(true);
+
         var direction = m_Joystick.Direction;
+        m_CurrntRing.Fire(new Vector3(-direction.x, 0.2f, -direction.y) * 1000);
+
+        SpawnRing();
     }
 
     #endregion

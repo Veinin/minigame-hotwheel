@@ -20,8 +20,6 @@ public class HomeView : MonoBehaviour
     public Button rankingList;
     public Button other;
 
-    private float m_BottonNomalY;
-
     void Awake()
     {
         rings.text = "0";
@@ -30,8 +28,6 @@ public class HomeView : MonoBehaviour
 
         level.text = "第 " + GameData.level + " 关（共5关）";
         start.onClick.AddListener(OnStart);
-
-        m_BottonNomalY = rankingList.transform.parent.localPosition.y;
     }
 
     void OnStart()
