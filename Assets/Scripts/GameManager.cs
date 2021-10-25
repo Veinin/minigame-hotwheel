@@ -26,6 +26,7 @@ public class GameManager : MonoBehaviour
         m_Joystick.gameObject.SetActive(false);
         m_Joystick.OnPointUpAction += OnJoystickUp;
         m_Joystick.OnPointDownAction += OnJoystickDown;
+        m_Joystick.OnPointDragAction += OnPointDragAction;
 
         m_HomeView = canvas.GetComponentInChildren<HomeView>(true);
         m_HomeView.OnStartAction += OnGameStart;
@@ -69,13 +70,35 @@ public class GameManager : MonoBehaviour
         m_PlayerView.back.gameObject.SetActive(false);
     }
 
+    void OnPointDragAction(float value)
+    {
+        if (value >= 0.99)
+        {
+            m_PlayerView.StartFocoEnergia();
+        }
+        else
+        {
+            m_PlayerView.StopFocoEnergia();
+        }
+    }
+
     void OnJoystickDown()
     {
-        m_PlayerView.back.gameObject.SetActive(true);
+        var baseForce = 2000f;
+        var baseHeight = 0.25f;
+
+        var energy = m_PlayerView.Energy;
+        if (energy > 0)
+        {
+            var incr = 1 + energy*1f/100;
+            baseForce = baseForce * incr * 0.5f;
+            baseHeight = baseHeight * incr * 0.5f;
+        }
 
         var direction = m_Joystick.Direction;
-        m_CurrntRing.Fire(new Vector3(-direction.x, 0.2f, -direction.y) * 1000);
+        m_CurrntRing.Fire(new Vector3(-direction.x, baseHeight, -direction.y) * baseForce);
 
+        m_PlayerView.StopFocoEnergia();
         SpawnRing();
     }
 

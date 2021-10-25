@@ -44,25 +44,35 @@ public class PlayerView : MonoBehaviour
 
     public void StartFocoEnergia()
     {
+        if (m_IsFocos)
+        {
+            return;
+        }
+
         m_Energy = 0;
         m_IsFocos = true;
+        back.gameObject.SetActive(false);
         energyBar.gameObject.SetActive(true);
     }
 
     public void StopFocoEnergia()
     {
         m_IsFocos = false;
+        back.gameObject.SetActive(true);
         energyBar.gameObject.SetActive(false);
     }
 
     void FixedUpdate() 
     {
-        if (m_IsFocos || m_Energy > 100)
+        if (!m_IsFocos || m_Energy > 100)
         {
             return;
         }
 
-        m_Energy += Time.fixedDeltaTime * 5;
-        energyValue.text = Mathf.Min(100, Mathf.Floor(m_Energy)).ToString();
+        m_Energy += Time.fixedDeltaTime * 50;
+
+        var energy = Mathf.Min(100, Mathf.Floor(m_Energy));
+        energyBar.value = energy/100;
+        energyValue.text = energy.ToString();
     }
 }
