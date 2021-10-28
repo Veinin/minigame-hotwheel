@@ -9,25 +9,23 @@ public class GameManager : MonoBehaviour
     private Vector3 OriginPos = new Vector3(0, 2.1f, 1.3f);
 
     public Ring ringPrefab;
+    public float maxFireDistance    = 200;
+    public float maxHeightForce     = 500;
+    public float maxForwardForce       = 2000;
 
     private HomeView    m_HomeView;
-    private Joystick    m_Joystick;
     private PlayerView  m_PlayerView;
 
     private Ring m_CurrntRing;
     private List<Ring>  m_RingList;
+
+    private bool m_IsStarted;
 
     void Awake()
     {
         m_RingList = new List<Ring>();
 
         var canvas = GameObject.Find("Canvas");
-        m_Joystick = canvas.GetComponentInChildren<FixedJoystick>(true);
-        m_Joystick.gameObject.SetActive(false);
-        m_Joystick.OnPointUpAction += OnJoystickUp;
-        m_Joystick.OnPointDownAction += OnJoystickDown;
-        m_Joystick.OnPointDragAction += OnPointDragAction;
-
         m_HomeView = canvas.GetComponentInChildren<HomeView>(true);
         m_HomeView.OnStartAction += OnGameStart;
 
@@ -42,8 +40,8 @@ public class GameManager : MonoBehaviour
 
     void OnGameBack()
     {
+        m_IsStarted = false;
         m_HomeView.Back();
-        m_Joystick.gameObject.SetActive(false);
         m_PlayerView.gameObject.SetActive(false);
     }
 
@@ -59,46 +57,57 @@ public class GameManager : MonoBehaviour
     {
         var ring = GameObject.Instantiate<Ring>(ringPrefab, SpawnPos, Quaternion.identity);
         ring.transform.DOMove(OriginPos, 0.5f).OnComplete(() => {
-            m_Joystick.gameObject.SetActive(true);
+            m_IsStarted = true;
         });
         m_CurrntRing = ring;
         m_RingList.Add(ring);
     }
 
-    void OnJoystickUp()
+    void Update()
     {
-        m_PlayerView.back.gameObject.SetActive(false);
+        CheckSlide();
     }
 
-    void OnPointDragAction(float value)
+    private Vector3 downPos;
+
+    void CheckSlide()
     {
-        if (value >= 0.99)
+        if (!m_IsStarted)
         {
-            m_PlayerView.StartFocoEnergia();
+            return;
         }
-        else
+
+        if (Input.GetMouseButtonDown(0))
         {
-            m_PlayerView.StopFocoEnergia();
+            downPos = Input.mousePosition;
+            m_PlayerView.ShowForceEnergy();
+        }
+
+        if (Input.GetMouseButton(0))
+        {
+            var distance = (Input.mousePosition - downPos).magnitude;
+            distance = Mathf.Clamp(distance, 0, maxFireDistance);
+            var percent = distance / maxFireDistance;
+            m_PlayerView.SetForcePercent(percent);
+        }
+
+        if (Input.GetMouseButtonUp(0))
+        {
+            OnFire(Input.mousePosition - downPos);
+            m_PlayerView.HideForceEnergy();
         }
     }
 
-    void OnJoystickDown()
+    void OnFire(Vector2 dir)
     {
-        var baseForce = 2000f;
-        var baseHeight = 0.25f;
-
-        var energy = m_PlayerView.Energy;
-        if (energy > 0)
-        {
-            var incr = 1 + energy*1f/100;
-            baseForce = baseForce * incr * 0.5f;
-            baseHeight = baseHeight * incr * 0.5f;
-        }
-
-        var direction = m_Joystick.Direction;
-        m_CurrntRing.Fire(new Vector3(-direction.x, baseHeight, -direction.y) * baseForce);
-
-        m_PlayerView.StopFocoEnergia();
+        var d = dir.normalized;
+        var distance = dir.magnitude;
+        var distancePercent = Mathf.Clamp(distance, 0, maxFireDistance) / maxFireDistance;
+        var uForce = distancePercent * maxHeightForce;
+        var dForce = distancePercent * maxForwardForce;
+        var force = new Vector3(d.x * dForce, uForce, d.y * dForce);
+        m_CurrntRing.Fire(force);
+        
         SpawnRing();
     }
 

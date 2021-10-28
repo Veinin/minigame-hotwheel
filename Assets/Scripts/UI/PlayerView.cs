@@ -16,9 +16,6 @@ public class PlayerView : MonoBehaviour
     public Slider energyBar;
     public Text energyValue;
 
-    private bool    m_IsFocos;
-    private float   m_Energy;
-
     void Awake()
     {
         tips.text = string.Format(TipsFormat, 0, 5);
@@ -34,45 +31,21 @@ public class PlayerView : MonoBehaviour
         }
     }
 
-    public int Energy
+    public void ShowForceEnergy()
     {
-        get 
-        {
-            return (int) m_Energy;
-        }
-    }
-
-    public void StartFocoEnergia()
-    {
-        if (m_IsFocos)
-        {
-            return;
-        }
-
-        m_Energy = 0;
-        m_IsFocos = true;
         back.gameObject.SetActive(false);
         energyBar.gameObject.SetActive(true);
     }
 
-    public void StopFocoEnergia()
+    public void HideForceEnergy()
     {
-        m_IsFocos = false;
         back.gameObject.SetActive(true);
         energyBar.gameObject.SetActive(false);
     }
 
-    void FixedUpdate() 
+    public void SetForcePercent(float value)
     {
-        if (!m_IsFocos || m_Energy > 100)
-        {
-            return;
-        }
-
-        m_Energy += Time.fixedDeltaTime * 50;
-
-        var energy = Mathf.Min(100, Mathf.Floor(m_Energy));
-        energyBar.value = energy/100;
-        energyValue.text = energy.ToString();
+        energyBar.value = value;
+        energyValue.text = Mathf.Floor(value * 100) + "%";
     }
 }

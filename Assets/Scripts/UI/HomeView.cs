@@ -30,7 +30,7 @@ public class HomeView : MonoBehaviour
         start.onClick.AddListener(OnStart);
     }
 
-    void OnStart()
+    public void OnStart()
     {
         var levelNode = level.transform.parent;
         var startNode = start.transform;
