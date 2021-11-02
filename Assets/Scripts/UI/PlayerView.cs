@@ -48,4 +48,9 @@ public class PlayerView : MonoBehaviour
         energyBar.value = value;
         energyValue.text = Mathf.Floor(value * 100) + "%";
     }
+
+    public void UpdateHitCount(int num)
+    {
+        tips.text = string.Format("全部套完通关：{0}/{1}", num, GameData.LevelPassHitNum);
+    }
 }
