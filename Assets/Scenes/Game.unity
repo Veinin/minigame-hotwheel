@@ -2382,7 +2382,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 925092894}
-  m_LocalRotation: {x: 0.09317181, y: 0.000000018193644, z: -0.0000000017025408, w: 0.99565005}
+  m_LocalRotation: {x: 0.093171835, y: -0.000000016612635, z: 0.000000001554592, w: 0.99565005}
   m_LocalPosition: {x: 0, y: 5.4, z: -3.5999985}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -3504,7 +3504,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1464205972}
-  m_LocalRotation: {x: 0.09317181, y: 0.000000018193644, z: -0.0000000017025408, w: 0.99565005}
+  m_LocalRotation: {x: 0.093171835, y: -0.000000016612635, z: 0.000000001554592, w: 0.99565005}
   m_LocalPosition: {x: 0, y: 5.4, z: -3.5999985}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -4497,7 +4497,6 @@ MonoBehaviour:
   back: {fileID: 1376633357}
   energyBar: {fileID: 836043653}
   energyValue: {fileID: 1604719181}
-  hitNum: {fileID: 0}
 --- !u!222 &1771774958
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -4552,7 +4551,7 @@ MonoBehaviour:
   ringPrefab: {fileID: 1917325527, guid: f89957d51d376974ea8c279b76f9061c, type: 3}
   maxFireDistance: 45
   maxFireHeight: 3
-  maxSlidePixelPercent: 0.2
+  maxSlidePixelPercent: 0.4
   enlargeTriggerCount: 5
   enlargeTriggerProb: 30
   enlargeTriggerProbPromote: 10
